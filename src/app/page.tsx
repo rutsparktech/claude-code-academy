@@ -1,253 +1,130 @@
 "use client";
-/**
- * Home Dashboard - לוח בקרה ראשי
- * מציג: ברכה, סטטיסטיקות, קורסים, ואתגר יומי
- */
-
 import Link from "next/link";
 import { useUserProgress } from "@/store/AppStore";
 
 const MODULES = [
-  {
-    href: "/lessons",
-    icon: "📚",
-    title: "שיעורים",
-    desc: "Terminal, Git, Node.js - צעד אחר צעד",
-    color: "#6B46C1",
-    lessons: 12,
-    completed: 0,
-  },
-  {
-    href: "/terminal",
-    icon: "⌨️",
-    title: "סימולטור Terminal",
-    desc: "תרגל פקודות בסביבה בטוחה",
-    color: "#14B8A6",
-    lessons: null,
-    completed: null,
-  },
-  {
-    href: "/git",
-    icon: "🌿",
-    title: "Git Visualizer",
-    desc: "ראה גרפים אינטראקטיביים של Git",
-    color: "#9F7AEA",
-    lessons: null,
-    completed: null,
-  },
-  {
-    href: "/challenges",
-    icon: "🏆",
-    title: "אתגרים",
-    desc: "בחנים יומיים ומשימות קידוד",
-    color: "#F59E0B",
-    lessons: null,
-    completed: null,
-  },
-  {
-    href: "/journal",
-    icon: "📓",
-    title: "יומן למידה",
-    desc: "תעד את ההתקדמות שלך",
-    color: "#EC4899",
-    lessons: null,
-    completed: null,
-  },
+  { href: "/lessons", icon: "📚", title: "שיעורים", desc: "לומדים צעד אחר צעד — Terminal, Git, Claude Code", color: "#5B35B0" },
+  { href: "/terminal", icon: "⌨️", title: "סימולטור Terminal", desc: "מתרגלים פקודות בסביבה בטוחה — ללא סיכון", color: "#0D9488" },
+  { href: "/git", icon: "🌿", title: "Git Visualizer", desc: "רואים גרפים אינטראקטיביים של branches ו-commits", color: "#7C3AED" },
+  { href: "/challenges", icon: "🏆", title: "אתגרים", desc: "בוחנים את עצמנו וצוברים XP", color: "#D97706" },
+  { href: "/journal", icon: "📓", title: "יומן למידה", desc: "מתעדים את ההתקדמות שלנו", color: "#DB2777" },
 ];
 
-const QUICK_TIPS = [
-  { cmd: "ls -la", desc: "הצג כל הקבצים כולל נסתרים" },
-  { cmd: "git status", desc: "בדוק מצב הrepository" },
-  { cmd: "cd ..", desc: "עלה תיקייה אחת למעלה" },
-  { cmd: "mkdir mydir", desc: "צור תיקייה חדשה" },
+const LEARNING_PATH = [
+  { step: 1, title: "Terminal — שפת הבסיס", desc: "לפני שמתחילים עם Claude Code — חייבים להכיר את ה-Terminal. זה הכלי שדרכו הכל עובד.", time: "20 דקות", href: "/lessons/terminal-basics" },
+  { step: 2, title: "Git — שמירת היסטוריה", desc: "Git שומר את כל השינויים בקוד. בלי Git אי אפשר לעבוד בצוות ואי אפשר לחזור לגרסה קודמת.", time: "30 דקות", href: "/lessons/git-basics" },
+  { step: 3, title: "Claude Code — ה-AI שכותב קוד", desc: "Claude Code הוא עוזר AI שרץ ב-Terminal, קורא את הקבצים שלנו ויכול לכתוב, לתקן ולהסביר קוד.", time: "35 דקות", href: "/lessons/claude-code-intro" },
+  { step: 4, title: "Prompts מדויקים", desc: "ככל שנתאר את המשימה בצורה ברורה יותר — התוצאה תהיה טובה יותר. זו המיומנות הכי חשובה.", time: "30 דקות", href: "/lessons/advanced-prompts" },
+  { step: 5, title: "אבטחה — מה לא לעשות", desc: "API keys, סיסמאות ומידע רגיש — חייבים לדעת מה לא לשים בקוד ואיך לשמור על הפרויקט.", time: "40 דקות", href: "/lessons/security-basics" },
 ];
 
 export default function HomePage() {
   const progress = useUserProgress();
   const xpInLevel = progress.xp % 100;
+  const completedCount = progress.completedLessons.length;
 
   return (
-    <div style={{ padding: "32px 28px", maxWidth: 1200, margin: "0 auto" }}>
+    <div style={{ padding: "36px 32px", maxWidth: 1100, margin: "0 auto" }}>
 
-      {/* ══ HERO SECTION ══ */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, rgba(107,70,193,0.15) 0%, rgba(20,184,166,0.08) 100%)",
-          border: "1px solid rgba(107,70,193,0.25)",
-          borderRadius: 24,
-          padding: "40px 40px",
-          marginBottom: 32,
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {/* Background decoration */}
-        <div style={{
-          position: "absolute", top: -60, left: -60,
-          width: 200, height: 200,
-          background: "radial-gradient(circle, rgba(107,70,193,0.2) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-        <div style={{
-          position: "absolute", bottom: -40, right: 100,
-          width: 150, height: 150,
-          background: "radial-gradient(circle, rgba(20,184,166,0.15) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }} />
-
-        <div style={{ position: "relative" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-            <span style={{ fontSize: 40 }}>👋</span>
-            <div>
-              <h1 style={{
-                fontSize: 32, fontWeight: 900,
-                background: "linear-gradient(135deg, #9F7AEA 0%, #2DD4BF 100%)",
-                WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-                lineHeight: 1.2,
-              }}>
-                ברוך הבא ל-Claude Code Academy!
-              </h1>
-              <p style={{ color: "var(--text-secondary)", fontSize: 16, marginTop: 6 }}>
-                מוכן ללמוד? בואו נתחיל את המסע שלך לעולם הקידוד 🚀
-              </p>
-            </div>
-          </div>
-
-          {/* XP Progress */}
-          <div style={{
-            background: "rgba(0,0,0,0.2)",
-            borderRadius: 12, padding: 16,
-            display: "inline-flex", flexDirection: "column", gap: 8,
-            minWidth: 280,
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
-              <span style={{ color: "var(--purple-light)", fontWeight: 600 }}>רמה {progress.level}</span>
-              <span style={{ color: "var(--text-muted)" }}>{xpInLevel}/100 XP לרמה הבאה</span>
-            </div>
-            <div style={{ height: 8, background: "rgba(255,255,255,0.1)", borderRadius: 999, overflow: "hidden" }}>
-              <div style={{
-                width: `${xpInLevel}%`, height: "100%",
-                background: "linear-gradient(90deg, #6B46C1, #14B8A6)",
-                borderRadius: 999, transition: "width 0.6s ease",
-              }} />
-            </div>
-            <div style={{ display: "flex", gap: 16, fontSize: 13 }}>
-              <span style={{ color: "var(--text-muted)" }}>✨ {progress.xp} XP סה"כ</span>
-              <span style={{ color: "var(--text-muted)" }}>📚 {progress.completedLessons.length} שיעורים</span>
-              <span style={{ color: "var(--text-muted)" }}>🔥 {progress.streak} ימים רצף</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ══ MODULES GRID ══ */}
-      <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16, color: "var(--text-primary)" }}>
-        מודולי למידה
-      </h2>
+      {/* ══ HERO ══ */}
       <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-        gap: 16, marginBottom: 32,
+        background: "linear-gradient(135deg, rgba(91,53,176,0.08) 0%, rgba(13,148,136,0.05) 100%)",
+        border: "1.5px solid rgba(91,53,176,0.15)",
+        borderRadius: 20, padding: "36px 40px", marginBottom: 40,
+        position: "relative", overflow: "hidden",
       }}>
-        {MODULES.map((mod) => (
-          <Link key={mod.href} href={mod.href} style={{ textDecoration: "none" }}>
-            <div
-              className="glass-card"
-              style={{
-                padding: 20, cursor: "pointer",
-                borderTop: `3px solid ${mod.color}`,
-              }}
-            >
-              <div style={{ fontSize: 32, marginBottom: 10 }}>{mod.icon}</div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)", marginBottom: 6 }}>
-                {mod.title}
-              </div>
-              <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.5 }}>
-                {mod.desc}
-              </div>
-              {mod.lessons !== null && (
-                <div style={{
-                  marginTop: 12,
-                  fontSize: 12, color: "var(--text-muted)",
-                  display: "flex", gap: 8,
-                }}>
-                  <span>{mod.lessons} שיעורים</span>
-                  <span>•</span>
-                  <span style={{ color: mod.color }}>{mod.completed} הושלמו</span>
-                </div>
-              )}
-            </div>
-          </Link>
-        ))}
-      </div>
+        <div style={{ position: "absolute", top: -80, left: -80, width: 240, height: 240, background: "radial-gradient(circle, rgba(91,53,176,0.1) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <h1 style={{ fontSize: "2rem", fontWeight: 900, marginBottom: 10, color: "var(--text-primary)" }}>
+          ברוכים הבאים ל-Claude Code Academy 🎉
+        </h1>
+        <p style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: 24, maxWidth: 600 }}>
+          כאן לומדים לעבוד עם Claude Code — מהצעד הראשון ועד לבניית פרויקטים אמיתיים. מתחילים מאפס, ללא רקע נדרש.
+        </p>
 
-      {/* ══ QUICK TIPS ══ */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-        <div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 14, color: "var(--text-primary)" }}>
-            💡 טיפים מהירים
-          </h2>
-          <div
-            className="glass-card"
-            style={{ padding: 20, display: "flex", flexDirection: "column", gap: 10 }}
-          >
-            {QUICK_TIPS.map((tip, i) => (
-              <div key={i} style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "8px 0",
-                borderBottom: i < QUICK_TIPS.length - 1 ? "1px solid var(--border)" : "none",
-              }}>
-                <code style={{
-                  background: "rgba(20,184,166,0.1)",
-                  border: "1px solid rgba(20,184,166,0.2)",
-                  borderRadius: 6, padding: "3px 8px",
-                  fontSize: 12, color: "var(--teal-light)",
-                  whiteSpace: "nowrap",
-                }}>
-                  {tip.cmd}
-                </code>
-                <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{tip.desc}</span>
-              </div>
-            ))}
+        {/* Progress */}
+        <div style={{ background: "white", borderRadius: 14, padding: 20, display: "inline-flex", flexDirection: "column", gap: 10, minWidth: 300, boxShadow: "0 2px 12px rgba(91,53,176,0.1)", border: "1px solid var(--border)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14 }}>
+            <span style={{ fontWeight: 700, color: "var(--purple)" }}>ההתקדמות שלנו — רמה {progress.level}</span>
+            <span style={{ color: "var(--text-muted)" }}>{xpInLevel}/100 XP לרמה הבאה</span>
+          </div>
+          <div style={{ height: 10, background: "rgba(91,53,176,0.1)", borderRadius: 999, overflow: "hidden" }}>
+            <div style={{ width: `${xpInLevel}%`, height: "100%", background: "var(--gradient-primary)", borderRadius: 999, transition: "width 0.6s ease" }} />
+          </div>
+          <div style={{ display: "flex", gap: 20, fontSize: 13 }}>
+            <span style={{ color: "var(--text-secondary)" }}>✨ <strong>{progress.xp}</strong> XP סה"כ</span>
+            <span style={{ color: "var(--text-secondary)" }}>📚 <strong>{completedCount}</strong> שיעורים הושלמו</span>
+            <span style={{ color: "var(--text-secondary)" }}>🔥 <strong>{progress.streak}</strong> ימים ברצף</span>
           </div>
         </div>
+      </div>
 
-        <div>
-          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 14, color: "var(--text-primary)" }}>
-            🎯 אתגר היום
-          </h2>
-          <div
-            className="glass-card"
-            style={{
-              padding: 24,
-              background: "linear-gradient(135deg, rgba(107,70,193,0.1), rgba(20,184,166,0.05))",
-              borderColor: "rgba(107,70,193,0.3)",
-            }}
-          >
-            <div style={{ fontSize: 24, marginBottom: 10 }}>🏗️</div>
-            <div style={{ fontWeight: 700, fontSize: 15, color: "var(--text-primary)", marginBottom: 8 }}>
-              צור מבנה פרויקט
-            </div>
-            <div style={{ fontSize: 13, color: "var(--text-secondary)", lineHeight: 1.6, marginBottom: 16 }}>
-              השתמש בטרמינל כדי ליצור מבנה תיקיות לפרויקט Node.js בסיסי עם תיקיות src, tests ו-docs
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <span style={{
-                background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)",
-                borderRadius: 999, padding: "3px 10px", fontSize: 12, color: "#F59E0B",
-              }}>
-                +50 XP
-              </span>
-              <Link href="/challenges" style={{
-                background: "var(--gradient-primary)", borderRadius: 8,
-                color: "white", fontSize: 13, fontWeight: 600,
-                padding: "8px 16px", textDecoration: "none",
-                transition: "all 0.2s",
-              }}>
-                התחל ←
+      {/* ══ LEARNING PATH ══ */}
+      <div style={{ marginBottom: 40 }}>
+        <h2 style={{ fontSize: "1.4rem", fontWeight: 800, marginBottom: 6, color: "var(--text-primary)" }}>
+          🗺️ מסלול הלמידה המומלץ
+        </h2>
+        <p style={{ fontSize: "1rem", color: "var(--text-secondary)", marginBottom: 20 }}>
+          עוקבים אחרי הסדר הזה — כל שיעור בנוי על הקודם
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {LEARNING_PATH.map((item) => {
+            const isDone = progress.completedLessons.includes(item.href.split("/").pop()!);
+            return (
+              <Link key={item.step} href={item.href} style={{ textDecoration: "none" }}>
+                <div className="glass-card" style={{
+                  padding: "18px 22px", display: "flex", alignItems: "center", gap: 18,
+                  borderColor: isDone ? "rgba(16,185,129,0.3)" : "var(--border)",
+                  background: isDone ? "rgba(16,185,129,0.03)" : "var(--bg-card)",
+                }}>
+                  <div style={{
+                    width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
+                    background: isDone ? "rgba(16,185,129,0.15)" : "rgba(91,53,176,0.1)",
+                    border: `2px solid ${isDone ? "rgba(16,185,129,0.4)" : "rgba(91,53,176,0.2)"}`,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: isDone ? 20 : 16, fontWeight: 900,
+                    color: isDone ? "#059669" : "var(--purple)",
+                  }}>
+                    {isDone ? "✓" : item.step}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--text-primary)", marginBottom: 4 }}>
+                      {item.title}
+                    </div>
+                    <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                      {item.desc}
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "center", flexShrink: 0 }}>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: 4 }}>⏱️ {item.time}</div>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: isDone ? "#059669" : "var(--purple)" }}>
+                      {isDone ? "הושלם ✓" : "להתחיל →"}
+                    </div>
+                  </div>
+                </div>
               </Link>
-            </div>
-          </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ══ MODULES ══ */}
+      <div>
+        <h2 style={{ fontSize: "1.4rem", fontWeight: 800, marginBottom: 6, color: "var(--text-primary)" }}>
+          🛠️ כלי הלמידה
+        </h2>
+        <p style={{ fontSize: "1rem", color: "var(--text-secondary)", marginBottom: 20 }}>
+          כל כלי פתוח בכל עת — אפשר לעבור ביניהם חופשית
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 14 }}>
+          {MODULES.map(mod => (
+            <Link key={mod.href} href={mod.href} style={{ textDecoration: "none" }}>
+              <div className="glass-card" style={{ padding: 20, borderTop: `3px solid ${mod.color}` }}>
+                <div style={{ fontSize: 32, marginBottom: 10 }}>{mod.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: "1rem", color: "var(--text-primary)", marginBottom: 6 }}>{mod.title}</div>
+                <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)", lineHeight: 1.5 }}>{mod.desc}</div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
