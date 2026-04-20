@@ -1,323 +1,131 @@
 "use client";
-/**
- * AppShell - מעטפת האפליקציה
- * כולל: Sidebar ניווט, Header, ומיכל תוכן
- * תומך ב-RTL מלא ומצב כהה/בהיר
- */
-
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useApp, useUserProgress, xpForLevel } from "@/store/AppStore";
+import { useApp, useUserProgress } from "@/store/AppStore";
 
-// ============================================================
-// NAV ITEMS - מבנה הניווט
-// ============================================================
 const NAV_ITEMS = [
-  { href: "/", icon: "🏠", label: "בית", id: "home" },
-  { href: "/lessons", icon: "📚", label: "שיעורים", id: "lessons" },
-  { href: "/terminal", icon: "⌨️", label: "טרמינל", id: "terminal" },
-  { href: "/git", icon: "🌿", label: "Git Visualizer", id: "git" },
-  { href: "/challenges", icon: "🏆", label: "אתגרים", id: "challenges" },
-  { href: "/journal", icon: "📓", label: "יומן", id: "journal" },
+  { href: "/", icon: "🏠", label: "בית" },
+  { href: "/lessons", icon: "📚", label: "שיעורים" },
+  { href: "/terminal", icon: "⌨️", label: "טרמינל" },
+  { href: "/git", icon: "🌿", label: "Git Visualizer" },
+  { href: "/challenges", icon: "🏆", label: "אתגרים" },
+  { href: "/journal", icon: "📓", label: "יומן" },
 ];
 
-// ============================================================
-// COMPONENT
-// ============================================================
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { state, dispatch } = useApp();
   const progress = useUserProgress();
   const pathname = usePathname();
-
-  const toggleTheme = () => {
-    dispatch({ type: "SET_THEME", payload: state.theme === "dark" ? "light" : "dark" });
-  };
-
-  // XP progress within current level
   const xpInLevel = progress.xp % 100;
-  const xpNeeded = 100;
+
+  const toggleTheme = () =>
+    dispatch({ type: "SET_THEME", payload: state.theme === "dark" ? "light" : "dark" });
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-dark)" }}>
-      {/* ══════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════ */}
-      <aside
-        style={{
-          width: sidebarOpen ? 260 : 72,
-          background: "var(--bg-card)",
-          borderLeft: "1px solid var(--border)",
-          display: "flex",
-          flexDirection: "column",
-          position: "fixed",
-          right: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 100,
-          transition: "width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          overflow: "hidden",
-        }}
-      >
+    <div style={{ display: "flex", minHeight: "100vh", background: "var(--bg-main)" }}>
+      <aside style={{
+        width: sidebarOpen ? 256 : 68,
+        background: "var(--bg-sidebar)",
+        borderLeft: "1px solid var(--border)",
+        display: "flex", flexDirection: "column",
+        position: "fixed", right: 0, top: 0, bottom: 0,
+        zIndex: 100, transition: "width 0.3s ease",
+        overflow: "hidden",
+        boxShadow: "2px 0 12px rgba(107,70,193,0.06)",
+      }}>
+
         {/* Logo */}
-        <div style={{ padding: "20px 16px", borderBottom: "1px solid var(--border)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                background: "var(--gradient-primary)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 20,
-                flexShrink: 0,
-                boxShadow: "var(--shadow-purple)",
-              }}
-            >
-              🤖
-            </div>
-            {sidebarOpen && (
-              <div style={{ overflow: "hidden" }}>
-                <div
-                  style={{
-                    fontWeight: 800,
-                    fontSize: 15,
-                    background: "var(--gradient-primary)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  Claude Code
-                </div>
-                <div style={{ fontSize: 11, color: "var(--text-muted)", whiteSpace: "nowrap" }}>
-                  Academy
-                </div>
-              </div>
-            )}
+        <div style={{ padding: "14px 12px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 10, minHeight: 64 }}>
+          <div style={{ width: 40, height: 40, borderRadius: 10, overflow: "hidden", flexShrink: 0, border: "1px solid var(--border)", background: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img src="/sparktech-logo.jpg" alt="SparkTech" style={{ width: 40, height: 40, objectFit: "contain" }} />
           </div>
+          {sidebarOpen && (
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 13, color: "var(--purple)", lineHeight: 1.2 }}>Claude Code Academy</div>
+              <div style={{ fontSize: 10, color: "var(--text-muted)" }}>by SparkTech</div>
+            </div>
+          )}
         </div>
 
-        {/* Nav Items */}
-        <nav style={{ flex: 1, padding: "12px 8px", overflowY: "auto" }}>
-          {NAV_ITEMS.map((item) => {
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: "10px 8px", overflowY: "auto" }}>
+          {NAV_ITEMS.map(item => {
             const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
             return (
-              <Link
-                key={item.id}
-                href={item.href}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "11px 12px",
-                  borderRadius: 12,
-                  marginBottom: 4,
-                  textDecoration: "none",
-                  background: isActive
-                    ? "linear-gradient(135deg, rgba(107,70,193,0.2), rgba(20,184,166,0.1))"
-                    : "transparent",
-                  border: isActive ? "1px solid rgba(107,70,193,0.3)" : "1px solid transparent",
-                  color: isActive ? "var(--purple-light)" : "var(--text-secondary)",
-                  transition: "all 0.2s ease",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-                onMouseEnter={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLElement).style.background = "var(--bg-card-hover)";
-                    (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!isActive) {
-                    (e.currentTarget as HTMLElement).style.background = "transparent";
-                    (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
-                  }
-                }}
-              >
-                {isActive && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: 0,
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      width: 3,
-                      height: "60%",
-                      borderRadius: "2px 0 0 2px",
-                      background: "var(--gradient-primary)",
-                    }}
-                  />
-                )}
-                <span style={{ fontSize: 20, flexShrink: 0 }}>{item.icon}</span>
-                {sidebarOpen && (
-                  <span style={{ fontSize: 14, fontWeight: isActive ? 600 : 400, whiteSpace: "nowrap" }}>
-                    {item.label}
-                  </span>
-                )}
+              <Link key={item.href} href={item.href} style={{
+                display: "flex", alignItems: "center", gap: 10,
+                padding: "10px 11px", borderRadius: 10, marginBottom: 2,
+                textDecoration: "none",
+                background: isActive ? "linear-gradient(135deg, rgba(107,70,193,0.1), rgba(20,184,166,0.05))" : "transparent",
+                border: `1px solid ${isActive ? "rgba(107,70,193,0.2)" : "transparent"}`,
+                color: isActive ? "var(--purple)" : "var(--text-secondary)",
+                transition: "all 0.2s",
+                position: "relative",
+              }}>
+                {isActive && <div style={{ position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)", width: 3, height: "55%", borderRadius: "2px 0 0 2px", background: "var(--gradient-primary)" }} />}
+                <span style={{ fontSize: 18, flexShrink: 0 }}>{item.icon}</span>
+                {sidebarOpen && <span style={{ fontSize: 13, fontWeight: isActive ? 700 : 400 }}>{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
-        {/* User XP Card */}
+        {/* XP */}
         {sidebarOpen && (
-          <div
-            style={{
-              margin: "0 12px 12px",
-              padding: 14,
-              background: "linear-gradient(135deg, rgba(107,70,193,0.1), rgba(20,184,166,0.05))",
-              border: "1px solid var(--border)",
-              borderRadius: 12,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--text-primary)" }}>
-                רמה {progress.level}
-              </span>
-              <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
-                {xpInLevel}/{xpNeeded} XP
-              </span>
+          <div style={{ margin: "0 10px 8px", padding: 12, background: "linear-gradient(135deg, rgba(107,70,193,0.06), rgba(20,184,166,0.03))", border: "1px solid var(--border)", borderRadius: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 6 }}>
+              <span style={{ fontWeight: 700, color: "var(--purple)" }}>רמה {progress.level}</span>
+              <span style={{ color: "var(--text-muted)" }}>{xpInLevel}/100 XP</span>
             </div>
-            <div
-              style={{
-                height: 6,
-                background: "rgba(107,70,193,0.2)",
-                borderRadius: 999,
-                overflow: "hidden",
-              }}
-            >
-              <div
-                style={{
-                  width: `${(xpInLevel / xpNeeded) * 100}%`,
-                  height: "100%",
-                  background: "var(--gradient-primary)",
-                  borderRadius: 999,
-                  transition: "width 0.6s ease",
-                }}
-              />
+            <div style={{ height: 5, background: "rgba(107,70,193,0.12)", borderRadius: 999, overflow: "hidden" }}>
+              <div style={{ width: `${xpInLevel}%`, height: "100%", background: "var(--gradient-primary)", borderRadius: 999, transition: "width 0.6s ease" }} />
             </div>
-            <div style={{ marginTop: 8, fontSize: 12, color: "var(--text-muted)" }}>
-              🔥 רצף: {progress.streak} ימים
+            <div style={{ marginTop: 6, fontSize: 11, color: "var(--text-muted)" }}>✨ {progress.xp} XP · 🔥 {progress.streak} ימים</div>
+          </div>
+        )}
+
+        {/* Social */}
+        {sidebarOpen && (
+          <div style={{ margin: "0 10px 8px", padding: "10px 12px", border: "1px solid var(--border)", borderRadius: 12, background: "var(--bg-card)" }}>
+            <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, textAlign: "center" }}>📲 יצירת קשר</div>
+            <div style={{ display: "flex", gap: 6 }}>
+              <a href="https://wa.me/972000000000" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "7px 8px", background: "#25D366", borderRadius: 8, color: "white", textDecoration: "none", fontSize: 11, fontWeight: 700 }}>
+                💬 וואטסאפ
+              </a>
+              <a href="https://www.linkedin.com/in/your-profile" target="_blank" rel="noopener noreferrer"
+                style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "7px 8px", background: "#0077B5", borderRadius: 8, color: "white", textDecoration: "none", fontSize: 11, fontWeight: 700 }}>
+                💼 LinkedIn
+              </a>
             </div>
           </div>
         )}
 
-        {/* Bottom Controls */}
-        <div
-          style={{
-            padding: "12px 8px",
-            borderTop: "1px solid var(--border)",
-            display: "flex",
-            gap: 8,
-            justifyContent: sidebarOpen ? "space-between" : "center",
-            flexWrap: "wrap",
-          }}
-        >
-          <button
-            onClick={toggleTheme}
-            style={{
-              background: "var(--bg-card-hover)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              color: "var(--text-secondary)",
-              cursor: "pointer",
-              fontSize: 16,
-              padding: "8px 12px",
-              transition: "all 0.2s",
-              flex: sidebarOpen ? 1 : "none",
-            }}
-            title={state.theme === "dark" ? "מצב בהיר" : "מצב כהה"}
-          >
+        {/* Controls */}
+        <div style={{ padding: "10px 8px", borderTop: "1px solid var(--border)", display: "flex", gap: 6 }}>
+          <button onClick={toggleTheme} style={{ background: "var(--bg-card-hover)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text-secondary)", cursor: "pointer", fontSize: 14, padding: "7px 10px", flex: 1, fontFamily: "Heebo, sans-serif" }}>
             {state.theme === "dark" ? "☀️" : "🌙"}
-            {sidebarOpen && <span style={{ fontSize: 12, marginRight: 6 }}>
-              {state.theme === "dark" ? " בהיר" : " כהה"}
-            </span>}
           </button>
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{
-              background: "var(--bg-card-hover)",
-              border: "1px solid var(--border)",
-              borderRadius: 10,
-              color: "var(--text-secondary)",
-              cursor: "pointer",
-              fontSize: 14,
-              padding: "8px 12px",
-              transition: "all 0.2s",
-            }}
-            title={sidebarOpen ? "כווץ תפריט" : "הרחב תפריט"}
-          >
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ background: "var(--bg-card-hover)", border: "1px solid var(--border)", borderRadius: 8, color: "var(--text-secondary)", cursor: "pointer", fontSize: 13, padding: "7px 10px" }}>
             {sidebarOpen ? "◀" : "▶"}
           </button>
         </div>
       </aside>
 
-      {/* ══════════════════════════════════
-          MAIN CONTENT
-      ══════════════════════════════════ */}
-      <main
-        style={{
-          flex: 1,
-          marginRight: sidebarOpen ? 260 : 72,
-          transition: "margin-right 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {/* Top Bar */}
-        <header
-          style={{
-            padding: "16px 24px",
-            borderBottom: "1px solid var(--border)",
-            background: "rgba(10,10,15,0.8)",
-            backdropFilter: "blur(12px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            position: "sticky",
-            top: 0,
-            zIndex: 50,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div
-              style={{
-                background: "linear-gradient(135deg, rgba(107,70,193,0.2), rgba(20,184,166,0.1))",
-                border: "1px solid var(--border)",
-                borderRadius: 8,
-                padding: "4px 12px",
-                fontSize: 12,
-                color: "var(--teal-light)",
-              }}
-            >
-              ✨ {progress.xp} XP
-            </div>
-            <div
-              style={{
-                background: "rgba(107,70,193,0.1)",
-                border: "1px solid rgba(107,70,193,0.3)",
-                borderRadius: 8,
-                padding: "4px 12px",
-                fontSize: 12,
-                color: "var(--purple-light)",
-              }}
-            >
-              🏆 רמה {progress.level}
-            </div>
+      <main style={{ flex: 1, marginRight: sidebarOpen ? 256 : 68, transition: "margin-right 0.3s ease", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <header style={{ padding: "12px 24px", borderBottom: "1px solid var(--border)", background: "var(--bg-card)", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 1px 6px rgba(107,70,193,0.05)" }}>
+          <div style={{ display: "flex", gap: 8 }}>
+            <span style={{ background: "rgba(107,70,193,0.06)", border: "1px solid rgba(107,70,193,0.15)", borderRadius: 7, padding: "3px 10px", fontSize: 12, color: "var(--purple)" }}>✨ {progress.xp} XP</span>
+            <span style={{ background: "rgba(20,184,166,0.06)", border: "1px solid rgba(20,184,166,0.15)", borderRadius: 7, padding: "3px 10px", fontSize: 12, color: "var(--teal)" }}>🏆 רמה {progress.level}</span>
           </div>
-          <div style={{ fontSize: 13, color: "var(--text-muted)" }}>
-            🔥 רצף {progress.streak} ימים
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 12, color: "var(--text-muted)" }}>🔥 {progress.streak} ימים</span>
+            <img src="/sparktech-logo.jpg" alt="SparkTech" style={{ width: 28, height: 28, borderRadius: 7, objectFit: "contain", border: "1px solid var(--border)", background: "white" }} />
           </div>
         </header>
-
-        {/* Page Content */}
-        <div style={{ flex: 1, padding: "0" }}>{children}</div>
+        <div style={{ flex: 1 }}>{children}</div>
       </main>
     </div>
   );
