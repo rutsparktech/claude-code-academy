@@ -31,8 +31,8 @@
   --text-muted:     #5A7070;
 
   /* Gradient */
-  --gradient-primary: linear-gradient(135deg, #0D5C55 0%, #14B8A6 100%);
-  --gradient-subtle:  linear-gradient(135deg, rgba(13,92,85,0.06) 0%, rgba(20,184,166,0.03) 100%);
+  --gradient-primary: linear-gradient(135deg, #0D5C55 0%, #14B8A6 60%, #6B46C1 100%);
+  --gradient-subtle:  linear-gradient(135deg, rgba(13,92,85,0.06) 0%, rgba(20,184,166,0.04) 60%, rgba(107,70,193,0.03) 100%);
 
   /* Shadows */
   --shadow-card:    0 2px 14px rgba(13, 92, 85, 0.08);
@@ -281,3 +281,59 @@ input::placeholder, textarea::placeholder { color: var(--text-muted); }
 .animate-fade-up   { animation: fadeInUp 0.4s ease forwards; }
 .animate-pulse     { animation: pulse-glow 2s ease-in-out infinite; }
 .animate-spin      { animation: spin 1s linear infinite; }
+
+/* ══════════════════════════════════
+   RESPONSIVE — Mobile First
+   ══════════════════════════════════ */
+
+/* Mobile grid overrides */
+@media (max-width: 767px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
+  h3 { font-size: 1rem; }
+
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  .mobile-full {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  .mobile-hide { display: none !important; }
+  .mobile-padding {
+    padding: 20px 16px !important;
+  }
+  .mobile-grid-1 {
+    grid-template-columns: 1fr !important;
+  }
+  .mobile-grid-2 {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-sm-grid-1 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ══════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════ */
+@media (max-width: 767px) {
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.2rem !important; }
+  .page-content { padding: 20px 16px !important; }
+  .desktop-grid-2 { grid-template-columns: 1fr !important; }
+  .desktop-grid-3 { grid-template-columns: 1fr 1fr !important; }
+  .desktop-only { display: none !important; }
+}
+@media (max-width: 480px) {
+  .desktop-grid-3 { grid-template-columns: 1fr !important; }
+  .mobile-stack { flex-direction: column !important; }
+}
+
+@media (max-width: 767px) {
+  h1 { font-size: 1.5rem; }
+  h2 { font-size: 1.2rem; }
+}
