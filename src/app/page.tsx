@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useUserProgress } from "@/store/AppStore";
-import { BookOpen, Terminal, GitBranch, Trophy, NotebookPen, Zap, Flame, CheckCircle, Clock, ChevronLeft, Award, GraduationCap, GitBranch as Github, Globe, Lock, Code2 } from "lucide-react";
+import { BookOpen, Terminal, GitBranch, Trophy, NotebookPen, Zap, Flame, CheckCircle, Clock, ChevronLeft, Award, GraduationCap, Globe, Lock, Code2 } from "lucide-react";
 
 const LEARNING_PATH = [
   { id: "terminal-basics",    n: 1, Icon: Terminal,  title: "Terminal",          subtitle: "הכלי הבסיסי", desc: "לפני GitHub, לפני Vercel, לפני הכל — Terminal הוא השפה שמחברת בין כל הכלים.", time: "25 דק'", href: "/lessons/terminal-basics",   color: "#0D5C55" },
   { id: "git-basics",         n: 2, Icon: GitBranch, title: "Git",               subtitle: "מכונת הזמן",   desc: "שמרו כל שינוי, חיזרו לכל גרסה. Git הוא הבסיס שכל מפתח בעולם משתמש בו.", time: "30 דק'", href: "/lessons/git-basics",         color: "#0077B5" },
-  { id: "github-basics",      n: 3, Icon: GitBranch as Github,    title: "GitHub",            subtitle: "הקוד בענן",    desc: "פתחו חשבון, העלו פרויקט, שתפו עם העולם. GitHub = הבית של הקוד שלכם.", time: "30 דק'", href: "/lessons/github-basics",      color: "#333333" },
+  { id: "github-basics",      n: 3, Icon: GitBranch,    title: "GitHub",            subtitle: "הקוד בענן",    desc: "פתחו חשבון, העלו פרויקט, שתפו עם העולם. GitHub = הבית של הקוד שלכם.", time: "30 דק'", href: "/lessons/github-basics",      color: "#333333" },
   { id: "deploy-vercel",      n: 4, Icon: Globe,     title: "Vercel",            subtitle: "אתר חי!",      desc: "מהקוד בGitHub לאתר עם כתובת — תוך 5 דקות, בחינם. כל push = עדכון אוטומטי.", time: "25 דק'", href: "/lessons/deploy-vercel",      color: "#6B46C1" },
   { id: "claude-code-intro",  n: 5, Icon: Code2,     title: "Claude Code",       subtitle: "AI שכותב",     desc: "AI שרץ ב-Terminal, קורא קבצים, כותב קוד, ועושה push — כל מה שלמדנו, אוטומטית.", time: "35 דק'", href: "/lessons/claude-code-intro",  color: "#0D5C55" },
   { id: "advanced-prompts",   n: 6, Icon: BookOpen,  title: "Prompts מדויקים",  subtitle: "לתקשר עם AI",  desc: "ההבדל בין תוצאה בינונית למדהימה הוא באיך מדברים עם Claude Code.", time: "30 דק'", href: "/lessons/advanced-prompts",   color: "#14B8A6" },
